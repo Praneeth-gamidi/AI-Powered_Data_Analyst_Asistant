@@ -165,7 +165,7 @@ elif selected_section == "📊 Data Profile":
 
             st.subheader("📈 Basic Statistics")
             stats_df = pd.DataFrame(result["statistics"])
-            st.dataframe(stats_df.astype(object), use_container_width=True)
+            st.dataframe(stats_df.astype(object), use_column_width=True)
 
 elif selected_section == "🧹 Clean Data":
     st.title("🧹 Clean Your Data")
@@ -207,7 +207,7 @@ elif selected_section == "📈 EDA Charts":
                     for j, histogram in enumerate(histograms[i:i+2]):
                         with cols[j]:
                             image = decode_base64_image(histogram["image"])
-                            st.image(image, caption=f"Distribution: {histogram['column']}", use_container_width=True)
+                            st.image(image, caption=f"Distribution: {histogram['column']}", use_column_width=True)
             else:
                 st.warning("No numeric columns found for histograms.")
 
@@ -215,7 +215,7 @@ elif selected_section == "📈 EDA Charts":
             correlation_image_b64 = result.get("correlation_matrix")
             if correlation_image_b64:
                 correlation_image = decode_base64_image(correlation_image_b64)
-                st.image(correlation_image, caption="Correlation Matrix Heatmap", use_container_width=True)
+                st.image(correlation_image, caption="Correlation Matrix Heatmap", use_column_width=True)
             else:
                 st.info("Need at least 2 numeric columns to generate a correlation matrix.")
 
