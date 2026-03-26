@@ -89,7 +89,14 @@ def generate_correlation_matrix(dataframe: pd.DataFrame) -> str:
 
     return plot_to_base64(figure)
 
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+embedding_model = None
+
+def get_embedding_model():
+    global embedding_model
+    if embedding_model is None:
+        from sentence_transformers import SentenceTransformer
+        embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+    return embedding_model
 
 def convert_rows_to_text(dataframe: pd.DataFrame) -> list:
     text_rows = []
@@ -99,7 +106,8 @@ def convert_rows_to_text(dataframe: pd.DataFrame) -> list:
     return text_rows
 
 def build_faiss_index(text_rows: list):
-    embeddings = embedding_model.encode(text_rows, show_progress_bar=False)
+    model = get_embedding_model()
+    embeddings = model.encode(text_rows, show_progress_bar=False)
     embeddings = np.array(embeddings, dtype="float32")
     faiss.normalize_L2(embeddings)
 
@@ -110,7 +118,8 @@ def build_faiss_index(text_rows: list):
     return faiss_index, embeddings
 
 def retrieve_top_rows(query: str, faiss_index, text_rows: list, top_k: int = 5) -> list:
-    query_embedding = embedding_model.encode([query], show_progress_bar=False)
+    model = get_embedding_model()
+    query_embedding = model.encode([query], show_progress_bar=False)
     query_embedding = np.array(query_embedding, dtype="float32")
     faiss.normalize_L2(query_embedding)
 
