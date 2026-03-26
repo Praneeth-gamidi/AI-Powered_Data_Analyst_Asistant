@@ -7,6 +7,10 @@ import os
 from PIL import Image
 
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+pd.options.mode.string_storage = "python"
+
+def show_html_table(df):
+    st.markdown(df.to_html(index=False, classes='table'), unsafe_allow_html=True)
 
 st.set_page_config(
     page_title="AI Data Analyst Assistant",
@@ -137,7 +141,7 @@ if selected_section == "📂 Upload Data":
 
                 st.subheader("👀 Preview (First 5 Rows)")
                 preview_df = pd.DataFrame(result["preview"])
-                st.table(preview_df.astype(str).replace("nan", "-"))
+                show_html_table(preview_df)
 
                 st.session_state["columns"] = list(preview_df.columns)
                 st.session_state["uploaded"] = True
@@ -156,16 +160,16 @@ elif selected_section == "📊 Data Profile":
 
             st.subheader("📌 Column Data Types")
             dtypes_df = pd.DataFrame(list(result["dtypes"].items()), columns=["Column", "Data Type"])
-            st.table(dtypes_df.astype(str))
+            show_html_table(dtypes_df)
 
             st.subheader("❓ Missing Values")
             missing_df = pd.DataFrame(list(result["missing_values"].items()), columns=["Column", "Missing Count"])
             missing_df["Status"] = missing_df["Missing Count"].apply(lambda x: "⚠️ Has missing" if x > 0 else "✅ Complete")
-            st.table(missing_df.astype(str))
+            show_html_table(missing_df)
 
             st.subheader("📈 Basic Statistics")
             stats_df = pd.DataFrame(result["statistics"])
-            st.table(stats_df.astype(str).replace("nan", "-"))
+            show_html_table(stats_df)
 
 elif selected_section == "🧹 Clean Data":
     st.title("🧹 Clean Your Data")
@@ -188,7 +192,7 @@ elif selected_section == "🧹 Clean Data":
 
             st.subheader("👀 Preview of Cleaned Data")
             preview_df = pd.DataFrame(result["preview"])
-            st.table(preview_df.astype(str).replace("nan", "-"))
+            show_html_table(preview_df)
 
 elif selected_section == "📈 EDA Charts":
     st.title("📈 Exploratory Data Analysis")
