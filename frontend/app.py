@@ -137,7 +137,7 @@ if selected_section == "📂 Upload Data":
 
                 st.subheader("👀 Preview (First 5 Rows)")
                 preview_df = pd.DataFrame(result["preview"])
-                st.table(preview_df)
+                st.table(preview_df.astype(str).replace("nan", "-"))
 
                 st.session_state["columns"] = list(preview_df.columns)
                 st.session_state["uploaded"] = True
@@ -156,16 +156,16 @@ elif selected_section == "📊 Data Profile":
 
             st.subheader("📌 Column Data Types")
             dtypes_df = pd.DataFrame(list(result["dtypes"].items()), columns=["Column", "Data Type"])
-            st.table(dtypes_df)
+            st.table(dtypes_df.astype(str))
 
             st.subheader("❓ Missing Values")
             missing_df = pd.DataFrame(list(result["missing_values"].items()), columns=["Column", "Missing Count"])
             missing_df["Status"] = missing_df["Missing Count"].apply(lambda x: "⚠️ Has missing" if x > 0 else "✅ Complete")
-            st.table(missing_df)
+            st.table(missing_df.astype(str))
 
             st.subheader("📈 Basic Statistics")
             stats_df = pd.DataFrame(result["statistics"])
-            st.dataframe(stats_df.astype(object), use_column_width=True)
+            st.table(stats_df.astype(str).replace("nan", "-"))
 
 elif selected_section == "🧹 Clean Data":
     st.title("🧹 Clean Your Data")
@@ -188,7 +188,7 @@ elif selected_section == "🧹 Clean Data":
 
             st.subheader("👀 Preview of Cleaned Data")
             preview_df = pd.DataFrame(result["preview"])
-            st.table(preview_df)
+            st.table(preview_df.astype(str).replace("nan", "-"))
 
 elif selected_section == "📈 EDA Charts":
     st.title("📈 Exploratory Data Analysis")
@@ -258,13 +258,13 @@ elif selected_section == "🔮 Predict":
 
             st.subheader("🔧 Features Used")
             features_df = pd.DataFrame({"Feature Columns": result["feature_columns"]})
-            st.table(features_df)
+            st.table(features_df.astype(str))
 
             st.subheader("🔮 Sample Predictions (First 10)")
             predictions_df = pd.DataFrame(result["sample_predictions"])
             predictions_df.columns = ["Actual Value", "Predicted Value"]
             predictions_df["Difference"] = (predictions_df["Actual Value"] - predictions_df["Predicted Value"]).round(4)
-            st.table(predictions_df)
+            st.table(predictions_df.astype(str))
 
             r2 = result["r2_score"]
             if r2 > 0.8:
